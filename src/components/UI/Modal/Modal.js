@@ -18,6 +18,8 @@ const modal = (props) => (
 );
 
 // méthode qui est passé en second paramètre qui dit quand le composant n'a pas besoin de s'actualiser, dans notre cas nous comparons si la variable show est la même, si elle ne change pas de statut nous n'avons pas besoin d'actualiser le composant parce que le modal ne sera pas montré
-const showIsEqual = (prevModal, nextModal) => prevModal.show === nextModal.show
+const showIsEqual = (prevProps, nextProps) => {
+    return prevProps.show === nextProps.show && prevProps.loading === nextProps.loading;
+}
 
 export default React.memo(modal, showIsEqual);
