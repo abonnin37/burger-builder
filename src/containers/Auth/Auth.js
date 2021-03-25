@@ -8,6 +8,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 
 import classes from './Auth.module.css'
 import * as actions from '../../store/actions/index';
+import {updateObject, checkValidity} from '../../shared/utility';
 
 class Auth extends Component {
     state = {
@@ -45,43 +46,19 @@ class Auth extends Component {
     }
 
     componentDidMount () {
-        console.log(this.props.building);
-        console.log(this.props.authRedirectPath );
         if(!this.props.buildingBurger && this.props.authRedirectPath !== '/'){
             this.props.onSetAuthRedirectPath('/');
         }
     }
 
-    checkValidity(value, rules) {
-        let isValid = true;
-
-        if (rules.required && isValid) {
-            // trim enlève tout les espaces blancs
-            isValid = value.trim() !== '';
-
-        }
-
-        if (rules.minLength && isValid){
-            isValid = value.length >= rules.minLength;
-        }
-
-        if (rules.maxLenght && isValid){
-            isValid = value.length <= rules.maxLenght;
-        }
-
-        return isValid;
-    }
-
     inputChangedHandler = (event, controlName) => {
-        const updatedControls = {
-            ...this.state.controls,
-            [controlName]: {
-                ...this.state.controls[controlName],
+        const updatedControls = updateObject(this.state.controls, {
+            [controlName]: updateObject(this.state.controls[controlName], {
                 value: event.target.value,
-                valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+                valid: checkValidity(event.target.value, this.state.controls[controlName].validation),
                 touched: true
-            }
-        }
+            })
+        });
         this.setState({controls: updatedControls});
     }
 

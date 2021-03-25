@@ -1,5 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../utility';
+import { updateObject } from '../../shared/utility';
 
 const initialState = {
     token: null,
@@ -51,7 +51,6 @@ const reducer = (state = initialState, action) => {
         case actionTypes.AUTH_FAIL:
             return authFail(state, action);
         case actionTypes.AUTH_LOGOUT:
-            console.log('Pute');
             return authLogout(state, action);
         case actionTypes.SET_AUTH_REDIRECT_PATH:
             return setAuthRedirectPath(state, action);

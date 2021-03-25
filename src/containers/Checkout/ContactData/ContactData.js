@@ -8,6 +8,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions/index';
+import {updateObject, checkValidity} from '../../../shared/utility';
 
 class ContactData extends Component {
     state = {
@@ -117,41 +118,17 @@ class ContactData extends Component {
         this.props.onOrderBurger(order, this.props.token);
     }
 
-    checkValidity(value, rules) {
-        let isValid = true;
-
-        if (rules.required && isValid) {
-            // trim enlève tout les espaces blancs
-            isValid = value.trim() !== '';
-
-        }
-
-        if (rules.minLength && isValid){
-            isValid = value.length >= rules.minLength;
-        }
-
-        if (rules.maxLenght && isValid){
-            isValid = value.length <= rules.maxLenght;
-        }
-
-        return isValid;
-    }
-
     inputChangedHandler = (event, inputId) => {
-        // On copie OrderForm 
-        const updatedOrderForm = {
-            ...this.state.orderForm
-        }
         // On copie l'élément voulut de OrderForm car si on l'altère directement on va modifier la référence directe à l'élément
-        const updatedOrderFormElement = {
-            ...updatedOrderForm[inputId]
-        }
-        // Une fois sécurisé, on peut updater la value de l'élément voulut
-        updatedOrderFormElement.value = event.target.value;
-        updatedOrderFormElement.valid = this.checkValidity(updatedOrderFormElement.value, updatedOrderFormElement.validation)
-        updatedOrderFormElement.touched = true;
-        // Updater l'orderForm entier
-        updatedOrderForm[inputId] = updatedOrderFormElement;
+        const updatedOrderFormElement = updateObject(this.state.orderForm[inputId], {
+            value: event.target.value,
+            valid: checkValidity(event.target.value, this.state.orderForm[inputId].validation),
+            touched: true
+        });
+        // On copie OrderForm 
+        const updatedOrderForm = updateObject(this.state.orderForm, {
+            [inputId]: updatedOrderFormElement
+        });
 
         // On check si tout le formulaire est prêt pour être envoyer au back-end
         let formIsValid = true;
